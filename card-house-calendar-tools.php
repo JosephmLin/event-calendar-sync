@@ -50,12 +50,12 @@ function chs_additional_calendars_deactivate() {
 
 add_action( 'admin_init', 'chs_register_additional_calendar_settings' );
 function chs_register_additional_calendar_settings() {
-    register_setting( 'chs_additional_calendar_settings', 'chs_workshops_ics_url', array(
+    register_setting( 'chs_settings_group', 'chs_workshops_ics_url', array(
         'type' => 'string',
         'sanitize_callback' => 'chs_sanitize_workshops_ics_url',
         'default' => '',
     ) );
-    register_setting( 'chs_additional_calendar_settings', 'chs_community_ics_url', array(
+    register_setting( 'chs_settings_group', 'chs_community_ics_url', array(
         'type' => 'string',
         'sanitize_callback' => 'chs_sanitize_community_ics_url',
         'default' => '',
@@ -80,59 +80,12 @@ function chs_sanitize_additional_ics_url( $value, $option ) {
     return esc_url_raw( $value );
 }
 
-add_action( 'admin_menu', 'chs_additional_calendars_admin_menu' );
-function chs_additional_calendars_admin_menu() {
-    add_options_page( 'Additional Show Calendars', 'Additional Show Calendars', 'manage_options', 'chs-additional-calendars', 'chs_additional_calendars_settings_page' );
-}
-
-function chs_additional_calendars_settings_page() {
+add_action( 'admin_init', 'chs_redirect_legacy_calendar_settings_page' );
+function chs_redirect_legacy_calendar_settings_page() {
+    if ( ! is_admin() || ! isset( $_GET['page'] ) || sanitize_key( wp_unslash( $_GET['page'] ) ) !== 'chs-additional-calendars' ) { return; }
     if ( ! current_user_can( 'manage_options' ) ) { return; }
-    $notice = '';
-    $result = null;
-    if ( isset( $_POST['chs_sync_additional_calendar'] ) && check_admin_referer( 'chs_sync_additional_calendar_action', 'chs_sync_additional_calendar_nonce' ) ) {
-        $calendar = sanitize_key( wp_unslash( $_POST['chs_sync_additional_calendar'] ) );
-        if ( isset( chs_additional_calendar_config()[ $calendar ] ) ) {
-            $result = chs_sync_additional_calendar( $calendar );
-            $notice = is_wp_error( $result ) ? $result->get_error_message() : sprintf( 'Sync complete. %d event(s) imported or updated.', (int) $result );
-        } else {
-            $notice = 'Unknown calendar selected.';
-        }
-    }
-    ?>
-    <div class="wrap">
-      <h1>Additional Show Calendars</h1>
-      <?php settings_errors(); ?>
-      <?php if ( $notice !== '' ) : ?><div class="notice <?php echo is_wp_error( $result ) || $result === null ? 'notice-error' : 'notice-success'; ?>"><p><?php echo esc_html( $notice ); ?></p></div><?php endif; ?>
-      <p>Set a separate public Google Calendar iCalendar feed for each calendar. Feeds sync hourly; use Sync Now to import immediately.</p>
-      <form method="post" action="options.php">
-        <?php settings_fields( 'chs_additional_calendar_settings' ); ?>
-        <table class="form-table">
-          <tr>
-            <th scope="row"><label for="chs_workshops_ics_url">Education ICS feed URL</label></th>
-            <td><input name="chs_workshops_ics_url" id="chs_workshops_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_workshops_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." /></td>
-          </tr>
-          <tr>
-            <th scope="row"><label for="chs_community_ics_url">Community Events ICS feed URL</label></th>
-            <td><input name="chs_community_ics_url" id="chs_community_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_community_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." /></td>
-          </tr>
-        </table>
-        <?php submit_button( 'Save Calendar Feeds' ); ?>
-      </form>
-      <h2>Sync calendars</h2>
-      <?php foreach ( chs_additional_calendar_config() as $calendar => $config ) : ?>
-        <form method="post" style="display:inline-block;margin:0 12px 12px 0">
-          <?php wp_nonce_field( 'chs_sync_additional_calendar_action', 'chs_sync_additional_calendar_nonce' ); ?>
-          <input type="hidden" name="chs_sync_additional_calendar" value="<?php echo esc_attr( $calendar ); ?>" />
-          <?php submit_button( 'Sync ' . $config['name'], 'secondary', 'submit', false ); ?>
-        </form>
-      <?php endforeach; ?>
-      <h2>Shortcodes</h2>
-      <p><code>[card_house_education]</code> and <code>[card_house_education_carousel]</code></p>
-      <p>The previous <code>[card_house_workshops]</code> and <code>[card_house_workshops_carousel]</code> shortcodes remain available as aliases.</p>
-      <p><code>[card_house_community_events]</code> and <code>[card_house_community_events_carousel]</code></p>
-      <p>Use the <code>limit</code> attribute to set the number of events or distinct titles, for example <code>[card_house_education_carousel limit="6"]</code>.</p>
-    </div>
-    <?php
+    wp_safe_redirect( admin_url( 'options-general.php?page=card-house-shows' ) );
+    exit;
 }
 
 foreach ( chs_additional_calendar_config() as $calendar => $config ) {

@@ -55,21 +55,13 @@ The post-deployment sync reports errors in the Actions run and exits unsuccessfu
 
 ## Configure calendars
 
-### Shows
+### All calendars
 
-Go to **Settings → Card House Shows**:
+Go to **Settings → Card House Events** to configure Shows, Education, and Community Events together:
 
-1. Enter the calendar's public address in iCal format (ICS), not its secret address.
-2. Save the feed URL.
-3. Click **Sync Now** to import immediately.
-
-### Education and community events
-
-Go to **Settings → Additional Show Calendars**:
-
-1. Enter the public HTTPS ICS URL for Education and/or Community Events.
+1. Enter each calendar's public HTTPS address in iCalendar format (ICS), not its secret address.
 2. Save the feed URLs.
-3. Use the individual **Sync Education** or **Sync Community Events** button for an immediate import.
+3. Use the individual **Sync Shows**, **Sync Education**, or **Sync Community Events** button to import immediately.
 
 Each feed syncs hourly through WordPress Cron. WP-Cron runs when the site receives requests, so an infrequently visited site may run scheduled syncs later than the exact hour. Sync buttons require the URLs to be saved first.
 

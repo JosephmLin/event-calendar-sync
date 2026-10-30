@@ -34,7 +34,7 @@ function chs_register_post_type() {
 
 add_action( 'admin_menu', 'chs_admin_menu' );
 function chs_admin_menu() {
-    add_options_page( 'Card House Shows', 'Card House Shows', 'manage_options', 'card-house-shows', 'chs_settings_page' );
+    add_options_page( 'Card House Events', 'Card House Events', 'manage_options', 'card-house-shows', 'chs_settings_page' );
 }
 add_action( 'admin_init', 'chs_register_settings' );
 function chs_register_settings() {
@@ -57,36 +57,60 @@ function chs_sanitize_ics_url( $value ) {
 function chs_settings_page() {
     if ( ! current_user_can( 'manage_options' ) ) { return; }
     $notice = '';
-    if ( isset( $_POST['chs_sync_now'] ) && check_admin_referer( 'chs_sync_now_action', 'chs_sync_now_nonce' ) ) {
+    $result = null;
+    if ( isset( $_POST['chs_sync_calendar'] ) && check_admin_referer( 'chs_sync_calendar_action', 'chs_sync_calendar_nonce' ) ) {
+        $calendar = sanitize_key( wp_unslash( $_POST['chs_sync_calendar'] ) );
+        if ( $calendar === 'shows' ) {
+            $result = chs_sync_calendar_events();
+        } elseif ( isset( chs_additional_calendar_config()[ $calendar ] ) ) {
+            $result = chs_sync_additional_calendar( $calendar );
+        } else {
+            $result = new WP_Error( 'chs_unknown_calendar', 'Unknown calendar selected.' );
+        }
+        $notice = is_wp_error( $result ) ? $result->get_error_message() : sprintf( 'Sync complete. %d event(s) imported or updated.', (int) $result );
+    } elseif ( isset( $_POST['chs_sync_now'] ) && check_admin_referer( 'chs_sync_now_action', 'chs_sync_now_nonce' ) ) {
         $result = chs_sync_calendar_events();
         $notice = is_wp_error( $result ) ? $result->get_error_message() : sprintf( 'Sync complete. %d event(s) imported or updated.', (int) $result );
     }
     ?>
     <div class="wrap">
-      <h1>Card House Shows</h1>
-      <?php if ( $notice !== '' ) : ?><div class="notice notice-info"><p><?php echo esc_html( $notice ); ?></p></div><?php endif; ?>
-      <p>Paste the public Google Calendar address in iCal format. Sync runs hourly and can also be started manually below.</p>
+      <h1>Card House Events</h1>
+      <?php settings_errors(); ?>
+      <?php if ( $notice !== '' ) : ?><div class="notice <?php echo is_wp_error( $result ) ? 'notice-error' : 'notice-success'; ?>"><p><?php echo esc_html( $notice ); ?></p></div><?php endif; ?>
+      <p>Set the public Google Calendar iCalendar (ICS) feed for each calendar. Feeds sync hourly; use the buttons below to sync one immediately.</p>
       <form method="post" action="options.php">
         <?php settings_fields( 'chs_settings_group' ); ?>
-        <table class="form-table"><tr>
-          <th scope="row"><label for="chs_ics_url">Google Calendar ICS feed URL</label></th>
-          <td><input name="chs_ics_url" id="chs_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." />
-          <p class="description">Use the Public address in iCal format, not the secret address. The feed must be publicly accessible.</p></td>
-        </tr></table>
-        <?php submit_button( 'Save Calendar Feed' ); ?>
+        <table class="form-table">
+          <tr>
+            <th scope="row"><label for="chs_ics_url">Shows ICS feed URL</label></th>
+            <td><input name="chs_ics_url" id="chs_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." />
+            <p class="description">Use the public iCalendar address, not the secret address.</p></td>
+          </tr>
+          <tr>
+            <th scope="row"><label for="chs_workshops_ics_url">Education ICS feed URL</label></th>
+            <td><input name="chs_workshops_ics_url" id="chs_workshops_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_workshops_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." /></td>
+          </tr>
+          <tr>
+            <th scope="row"><label for="chs_community_ics_url">Community Events ICS feed URL</label></th>
+            <td><input name="chs_community_ics_url" id="chs_community_ics_url" type="url" class="regular-text" value="<?php echo esc_attr( get_option( 'chs_community_ics_url', '' ) ); ?>" placeholder="https://calendar.google.com/calendar/ical/..." /></td>
+          </tr>
+        </table>
+        <?php submit_button( 'Save Calendar Feeds' ); ?>
       </form>
-      <hr />
-      <form method="post">
-        <?php wp_nonce_field( 'chs_sync_now_action', 'chs_sync_now_nonce' ); ?>
-        <input type="hidden" name="chs_sync_now" value="1" />
-        <?php submit_button( 'Sync Now', 'secondary' ); ?>
-      </form>
+      <h2>Sync calendars</h2>
+      <?php foreach ( array_merge( array( 'shows' => array( 'name' => 'Shows' ) ), chs_additional_calendar_config() ) as $calendar => $config ) : ?>
+        <form method="post" style="display:inline-block;margin:0 12px 12px 0">
+          <?php wp_nonce_field( 'chs_sync_calendar_action', 'chs_sync_calendar_nonce' ); ?>
+          <input type="hidden" name="chs_sync_calendar" value="<?php echo esc_attr( $calendar ); ?>" />
+          <?php submit_button( 'Sync ' . $config['name'], 'secondary', 'submit', false ); ?>
+        </form>
+      <?php endforeach; ?>
       <h2>Page shortcodes</h2>
       <p><code>[card_house_shows]</code> displays upcoming shows.</p>
       <p><code>[card_house_shows_carousel]</code> displays upcoming shows in a carousel, grouping events with the same title.</p>
       <p><code>[card_house_shows_archive]</code> displays past shows.</p>
       <p>Optional: <code>[card_house_shows limit="12"]</code>, <code>[card_house_shows_archive limit="24"]</code>, or <code>[card_house_shows_carousel limit="6"]</code>.</p>
-      <p>Configure the Education and Community Events feeds under <a href="<?php echo esc_url( admin_url( 'options-general.php?page=chs-additional-calendars' ) ); ?>">Settings &rarr; Additional Show Calendars</a>.</p>
+      <p>Education: <code>[card_house_education]</code>, <code>[card_house_education_carousel]</code>. Community Events: <code>[card_house_community_events]</code>, <code>[card_house_community_events_carousel]</code>.</p>
     </div>
     <?php
 }
