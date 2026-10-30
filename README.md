@@ -19,7 +19,9 @@ There are no Composer, npm, or build-step dependencies. This is a standalone Wor
 - `card-house-education.php` — Education feed configuration and its two shortcode registrations. The underlying post type, feed option, cron hook, and URL slug retain their prior workshop identifiers to preserve existing imported data and links.
 - `card-house-community-events.php` — Community Events feed configuration and its two shortcode registrations.
 
-Keep all five PHP files in the same plugin directory. The entry point loads each calendar-specific module before the shared tools because the tools combine their calendar configuration.
+- `tools/sync-calendars.php` — CLI-only deployment helper that immediately syncs every calendar with a saved feed URL.
+
+Keep all five plugin PHP modules in the same plugin directory. The entry point loads each calendar-specific module before the shared tools because the tools combine their calendar configuration.
 
 ## Install
 
@@ -29,6 +31,27 @@ Keep all five PHP files in the same plugin directory. The entry point loads each
 4. Configure the feed URLs in WordPress settings and run the initial sync.
 
 Do not omit the companion PHP files when copying or packaging the plugin; the main file requires them.
+
+## Automatic deployment from GitHub
+
+The included GitHub Actions workflow deploys PHP source changes pushed to `main` to `wp-content/plugins/card-house-shows` over SSH, then immediately syncs each calendar that has a saved feed URL. It does not activate the plugin or change its feed settings. The plugin must already be active, its feeds must be configured, and the GreenGeeks account must provide SSH and PHP CLI access.
+
+Before enabling deployment, configure these repository variables under **Settings → Secrets and variables → Actions → Variables**:
+
+| Variable | Value |
+|---|---|
+| `WP_DEPLOY_SSH_HOST` | SSH hostname from GreenGeeks |
+| `WP_DEPLOY_SSH_PORT` | SSH port; use `22` if the host specifies no other port |
+| `WP_DEPLOY_SSH_USER` | GreenGeeks SSH username |
+| `WP_DEPLOY_SSH_KNOWN_HOSTS` | Verified SSH host-key line(s) for that host and port |
+| `WP_DEPLOY_WORDPRESS_ROOT` | Absolute server path to the WordPress directory containing `wp-load.php` |
+| `WP_DEPLOY_ENABLED` | Set to `true` only after all SSH settings below are ready |
+
+Add `WP_DEPLOY_SSH_KEY` under the same page’s **Secrets** tab. It must contain the private key for a public key authorized on the GreenGeeks account. Do not put private keys in the repository or workflow variables.
+
+Verify the host key with GreenGeeks before adding it to `WP_DEPLOY_SSH_KNOWN_HOSTS`; do not disable SSH host-key checking. The SSH account needs write permission to the plugin directory. The workflow checks that PHP CLI and the WordPress root are available before copying files. After setup, use **Actions → Deploy WordPress plugin → Run workflow** for the first deployment; later PHP changes pushed to `main` deploy automatically.
+
+The post-deployment sync reports errors in the Actions run and exits unsuccessfully if a configured feed cannot be fetched/imported. Unconfigured feeds are skipped. The helper is CLI-only and exits without loading WordPress when requested over HTTP.
 
 ## Configure calendars
 

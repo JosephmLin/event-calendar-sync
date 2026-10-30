@@ -1,0 +1,93 @@
+name: Deploy WordPress plugin
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.php'
+      - 'tools/**'
+      - '.github/workflows/deploy-wordpress.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-plugin-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.WP_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out plugin source
+        uses: actions/checkout@v4
+
+      - name: Configure SSH and verify the site
+        env:
+          WP_DEPLOY_SSH_HOST: ${{ vars.WP_DEPLOY_SSH_HOST }}
+          WP_DEPLOY_SSH_PORT: ${{ vars.WP_DEPLOY_SSH_PORT }}
+          WP_DEPLOY_SSH_USER: ${{ vars.WP_DEPLOY_SSH_USER }}
+          WP_DEPLOY_SSH_KNOWN_HOSTS: ${{ vars.WP_DEPLOY_SSH_KNOWN_HOSTS }}
+          WP_DEPLOY_SSH_KEY: ${{ secrets.WP_DEPLOY_SSH_KEY }}
+          WP_DEPLOY_WORDPRESS_ROOT: ${{ vars.WP_DEPLOY_WORDPRESS_ROOT }}
+        run: |
+          set -euo pipefail
+          : "${WP_DEPLOY_SSH_HOST:?Set the WP_DEPLOY_SSH_HOST repository variable}"
+          : "${WP_DEPLOY_SSH_USER:?Set the WP_DEPLOY_SSH_USER repository variable}"
+          : "${WP_DEPLOY_SSH_KNOWN_HOSTS:?Set the WP_DEPLOY_SSH_KNOWN_HOSTS repository variable}"
+          : "${WP_DEPLOY_SSH_KEY:?Set the WP_DEPLOY_SSH_KEY repository secret}"
+          : "${WP_DEPLOY_WORDPRESS_ROOT:?Set the WP_DEPLOY_WORDPRESS_ROOT repository variable}"
+
+          WP_DEPLOY_SSH_PORT="${WP_DEPLOY_SSH_PORT:-22}"
+          [[ "$WP_DEPLOY_SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "$WP_DEPLOY_SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]
+          [[ "$WP_DEPLOY_SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$WP_DEPLOY_WORDPRESS_ROOT" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          if [[ "$WP_DEPLOY_WORDPRESS_ROOT" == *"/../"* || "$WP_DEPLOY_WORDPRESS_ROOT" == */.. ]]; then
+            echo "The WordPress root must not contain parent-directory segments." >&2
+            exit 1
+          fi
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "$WP_DEPLOY_SSH_KEY" > "$HOME/.ssh/wp_deploy_key"
+          printf '%s\n' "$WP_DEPLOY_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/wp_deploy_key" "$HOME/.ssh/known_hosts"
+          {
+            printf 'Host wp-site\n'
+            printf '  HostName %s\n' "$WP_DEPLOY_SSH_HOST"
+            printf '  User %s\n' "$WP_DEPLOY_SSH_USER"
+            printf '  Port %s\n' "$WP_DEPLOY_SSH_PORT"
+            printf '  IdentityFile %s/.ssh/wp_deploy_key\n' "$HOME"
+            printf '  IdentitiesOnly yes\n'
+            printf '  BatchMode yes\n'
+            printf '  StrictHostKeyChecking yes\n'
+            printf '  UserKnownHostsFile %s/.ssh/known_hosts\n' "$HOME"
+          } > "$HOME/.ssh/config"
+          chmod 600 "$HOME/.ssh/config"
+
+          ssh wp-site "command -v php >/dev/null && test -f '$WP_DEPLOY_WORDPRESS_ROOT/wp-load.php'"
+
+      - name: Upload plugin files
+        env:
+          WP_DEPLOY_WORDPRESS_ROOT: ${{ vars.WP_DEPLOY_WORDPRESS_ROOT }}
+        run: |
+          set -euo pipefail
+          plugin_dir="$WP_DEPLOY_WORDPRESS_ROOT/wp-content/plugins/card-house-shows"
+          ssh wp-site "mkdir -p -- '$plugin_dir'"
+          rsync -az \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='README.md' \
+            ./ "wp-site:$plugin_dir/"
+
+      - name: Sync configured calendars immediately
+        env:
+          WP_DEPLOY_WORDPRESS_ROOT: ${{ vars.WP_DEPLOY_WORDPRESS_ROOT }}
+        run: |
+          set -euo pipefail
+          plugin_dir="$WP_DEPLOY_WORDPRESS_ROOT/wp-content/plugins/card-house-shows"
+          ssh wp-site "php '$plugin_dir/tools/sync-calendars.php' '$WP_DEPLOY_WORDPRESS_ROOT'"
