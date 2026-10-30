@@ -21,7 +21,7 @@ There are no Composer, npm, or build-step dependencies. This is a standalone Wor
 
 - `tools/sync-calendars.php` — CLI-only deployment helper that immediately syncs every calendar with a saved feed URL.
 
-Keep all five plugin PHP modules in the same plugin directory. The entry point loads each calendar-specific module before the shared tools because the tools combine their calendar configuration.
+Keep all five plugin PHP modules in the same plugin directory. The entry point loads each calendar-specific module before the shared tools because the tools combine their calendar configuration. The Shows module also bootstraps the new entry point when WordPress loads it directly from an older active-plugin record.
 
 ## Install
 
@@ -139,6 +139,7 @@ Imported event metadata keys are `_chs_uid`, `_chs_start`, `_chs_end`, `_chs_tic
 The PHP source is the implementation source of truth. Preserve the separation between calendar-specific config/shortcode files and shared feed/rendering behavior:
 
 - Keep Shows-only behavior in `card-house-shows.php`; keep Education and Community Events configuration/shortcodes in their corresponding calendar files.
+- Preserve the compatibility bootstrap in `card-house-shows.php`: WordPress may retain that former entry-point path as active when upgrading installations to the descriptive entry-point filename.
 - To add another calendar, create a calendar-specific file with its configuration and shortcode registrations, load it from `card-house-google-calendar-events.php`, then add its settings and post type to the shared calendar tools.
 - Keep shared import logic aligned with `chs_parse_ics()`, `chs_ics_datetime()`, `chs_description_url()`, and `chs_clean_description()` in `card-house-shows.php`.
 - Avoid duplicating import/render logic between calendar modules.

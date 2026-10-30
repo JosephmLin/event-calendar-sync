@@ -1,6 +1,10 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+if ( ! defined( 'CHS_CRON_HOOK' ) ) {
+    require_once __DIR__ . '/card-house-google-calendar-events.php';
+}
+
 function chs_shows_activate() {
     chs_register_post_type();
     if ( ! wp_next_scheduled( CHS_CRON_HOOK ) ) {

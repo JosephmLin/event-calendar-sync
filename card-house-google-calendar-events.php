@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Card House Google Calendar Events
  * Description: Imports events from public Google Calendar iCalendar feeds for shows, education, and community events.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Card House Theater
  * License: GPL-2.0-or-later
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'CHS_VERSION', '1.1.2' );
+define( 'CHS_VERSION', '1.1.3' );
 define( 'CHS_CRON_HOOK', 'chs_sync_calendar' );
 
 require_once __DIR__ . '/card-house-shows.php';
