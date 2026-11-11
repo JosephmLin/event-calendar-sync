@@ -111,6 +111,95 @@
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif !important;
 }
 
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards {
+  background: transparent !important;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards a {
+  color: var(--cwcw-ink);
+  text-decoration: none;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card {
+  height: 100%;
+  overflow: hidden;
+  background: var(--cwcw-paper) !important;
+  border: 1px solid rgba(76, 43, 74, .16) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 24px rgba(39, 27, 41, .12) !important;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards a:hover .fw-card,
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards a:focus-visible .fw-card {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(39, 27, 41, .18) !important;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .img-wrapper {
+  border-radius: 15px 15px 0 0 !important;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-img-top {
+  border-radius: 15px 15px 0 0;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-body {
+  padding: 1.15rem 1.25rem 1.35rem;
+  color: var(--cwcw-ink);
+  background: var(--cwcw-paper);
+  text-align: left;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-date {
+  color: var(--cwcw-coral);
+  font: 600 1.2rem/1.3 var(--cwcw-script-font);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-title {
+  margin: .35rem 0;
+  color: var(--cwcw-plum);
+  font: 600 1.65rem/1.12 var(--cwcw-display-font);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-body hr {
+  border-color: var(--cwcw-gold);
+  opacity: .7;
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .card-subtitle {
+  color: #594f57;
+  font: 400 .95rem/1.6 var(--cwcw-ui-font);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .badge {
+  padding: .5em .8em;
+  color: #fffaf0;
+  background: var(--cwcw-plum);
+  border-radius: 999px;
+  font: 600 .75rem/1.2 var(--cwcw-ui-font);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .badge.cost {
+  background: var(--cwcw-coral);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-card .badge.spots {
+  color: var(--cwcw-ink);
+  background: var(--cwcw-gold);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards .fw-empty {
+  width: 100%;
+  color: var(--cwcw-ink);
+  font: 500 1.1rem/1.5 var(--cwcw-ui-font);
+}
+
+.cwcw-shows-cards .fw-embed-wrap .fw-embed.fw-cards a:focus-visible {
+  outline: 3px solid var(--cwcw-coral);
+  outline-offset: 3px;
+}
+
 .cwcw-classes .fw-embed-wrap .fc {
   color: var(--cwcw-ink);
   font-family: var(--cwcw-ui-font);
@@ -229,7 +318,7 @@
   border-radius: 999px;
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-content {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-content {
   overflow: hidden;
   background: var(--cwcw-paper);
   border: 1px solid rgba(76, 43, 74, .2);
@@ -237,27 +326,27 @@ body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-content {
   box-shadow: 0 24px 80px rgba(39, 27, 41, .32);
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-header {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-header {
   color: #fffaf0;
   background: var(--cwcw-plum);
   border-bottom: 3px solid var(--cwcw-gold);
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-title {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-title {
   color: #fffaf0 !important;
   font: 600 clamp(1.6rem, 4vw, 2.5rem)/1.05 var(--cwcw-display-font);
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-subtitle {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-subtitle {
   color: #f0d99f !important;
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-body {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-body {
   color: var(--cwcw-ink);
   background: var(--cwcw-paper);
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-btn-purchase {
   color: #fffaf0;
   background: var(--cwcw-coral);
   border-color: var(--cwcw-coral);
@@ -265,8 +354,8 @@ body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase {
   font-weight: 750;
 }
 
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase:hover,
-body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase:focus {
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-btn-purchase:hover,
+body.cwcw-has-crowdwork-embed #fwCalendarModal .fw-modal-btn-purchase:focus {
   color: var(--cwcw-ink);
   background: var(--cwcw-gold);
   border-color: var(--cwcw-gold);
