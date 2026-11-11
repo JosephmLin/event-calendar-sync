@@ -1,0 +1,84 @@
+name: Deploy CrowdWork CardHouseTheater plugin
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'crowdwork-cardhousetheater-plugin/**'
+      - '.github/workflows/deploy-crowdwork-wordpress.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crowdwork-wordpress-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.WP_CROWDWORK_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH and verify WordPress root
+        env:
+          WP_CROWDWORK_SSH_HOST: ${{ vars.WP_CROWDWORK_SSH_HOST }}
+          WP_CROWDWORK_SSH_PORT: ${{ vars.WP_CROWDWORK_SSH_PORT }}
+          WP_CROWDWORK_SSH_USER: ${{ vars.WP_CROWDWORK_SSH_USER }}
+          WP_CROWDWORK_SSH_KNOWN_HOSTS: ${{ vars.WP_CROWDWORK_SSH_KNOWN_HOSTS }}
+          WP_CROWDWORK_SSH_KEY: ${{ secrets.WP_CROWDWORK_SSH_KEY }}
+          WP_CROWDWORK_WORDPRESS_ROOT: ${{ vars.WP_CROWDWORK_WORDPRESS_ROOT }}
+        run: |
+          set -euo pipefail
+          : "${WP_CROWDWORK_SSH_HOST:?Set the WP_CROWDWORK_SSH_HOST repository variable}"
+          : "${WP_CROWDWORK_SSH_USER:?Set the WP_CROWDWORK_SSH_USER repository variable}"
+          : "${WP_CROWDWORK_SSH_KNOWN_HOSTS:?Set the WP_CROWDWORK_SSH_KNOWN_HOSTS repository variable}"
+          : "${WP_CROWDWORK_SSH_KEY:?Set the WP_CROWDWORK_SSH_KEY repository secret}"
+          : "${WP_CROWDWORK_WORDPRESS_ROOT:?Set the WP_CROWDWORK_WORDPRESS_ROOT repository variable}"
+
+          WP_CROWDWORK_SSH_PORT="${WP_CROWDWORK_SSH_PORT:-22}"
+          [[ "$WP_CROWDWORK_SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "$WP_CROWDWORK_SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]
+          [[ "$WP_CROWDWORK_SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$WP_CROWDWORK_WORDPRESS_ROOT" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          case "/$WP_CROWDWORK_WORDPRESS_ROOT/" in
+            *"/../"*) echo "The WordPress root must not contain parent-directory segments." >&2; exit 1 ;;
+          esac
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "$WP_CROWDWORK_SSH_KEY" > "$HOME/.ssh/crowdwork_deploy_key"
+          printf '%s\n' "$WP_CROWDWORK_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/crowdwork_deploy_key" "$HOME/.ssh/known_hosts"
+          {
+            printf 'Host crowdwork-site\n'
+            printf '  HostName %s\n' "$WP_CROWDWORK_SSH_HOST"
+            printf '  User %s\n' "$WP_CROWDWORK_SSH_USER"
+            printf '  Port %s\n' "$WP_CROWDWORK_SSH_PORT"
+            printf '  IdentityFile %s/.ssh/crowdwork_deploy_key\n' "$HOME"
+            printf '  IdentitiesOnly yes\n'
+            printf '  BatchMode yes\n'
+            printf '  StrictHostKeyChecking yes\n'
+            printf '  UserKnownHostsFile %s/.ssh/known_hosts\n' "$HOME"
+          } > "$HOME/.ssh/config"
+          chmod 600 "$HOME/.ssh/config"
+
+          ssh crowdwork-site "test -f '$WP_CROWDWORK_WORDPRESS_ROOT/wp-load.php' && test -d '$WP_CROWDWORK_WORDPRESS_ROOT/wp-content/plugins'"
+
+      - name: Upload CrowdWork plugin files
+        env:
+          WP_CROWDWORK_WORDPRESS_ROOT: ${{ vars.WP_CROWDWORK_WORDPRESS_ROOT }}
+        run: |
+          set -euo pipefail
+          plugin_dir="$WP_CROWDWORK_WORDPRESS_ROOT/wp-content/plugins/crowdwork-cardhousetheater-plugin"
+          ssh crowdwork-site "mkdir -p -- '$plugin_dir'"
+          rsync -az \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='README.md' \
+            crowdwork-cardhousetheater-plugin/ \
+            "crowdwork-site:$plugin_dir/"

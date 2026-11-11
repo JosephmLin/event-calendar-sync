@@ -23,6 +23,25 @@ The shortcode renders the CrowdWork classes calendar with the theatre-inspired h
 
 The WordPress page needs to allow JavaScript in the shortcode output. Use a standard Shortcode block or the page builder's shortcode element.
 
+## Optional GitHub deployment
+
+The repository includes a separate GitHub Actions workflow for deploying this plugin to GreenGeeks over SSH. It copies only this plugin's files to `wp-content/plugins/crowdwork-cardhousetheater-plugin`; it does not activate the plugin or edit WordPress page content. The workflow is disabled until `WP_CROWDWORK_DEPLOY_ENABLED` is set to `true`.
+
+Before enabling it, add these repository variables in **Settings → Secrets and variables → Actions → Variables**:
+
+| Variable | Value |
+|---|---|
+| `WP_CROWDWORK_SSH_HOST` | SSH hostname shown by GreenGeeks |
+| `WP_CROWDWORK_SSH_PORT` | SSH port; use `22` if GreenGeeks specifies no other port |
+| `WP_CROWDWORK_SSH_USER` | SSH username |
+| `WP_CROWDWORK_SSH_KNOWN_HOSTS` | Verified SSH host-key line(s); confirm the fingerprint with GreenGeeks |
+| `WP_CROWDWORK_WORDPRESS_ROOT` | Absolute server path containing `wp-load.php` |
+| `WP_CROWDWORK_DEPLOY_ENABLED` | Set to `true` only after testing the SSH configuration |
+
+Add a dedicated SSH private key as the `WP_CROWDWORK_SSH_KEY` repository secret and authorize its public key for the GreenGeeks account. Never store the private key in the repository or send it in chat. Keep SSH host-key checking enabled.
+
+After setup, select **Actions → Deploy CrowdWork CardHouseTheater plugin → Run workflow** to test a deployment. Later changes under this plugin's folder on `main` deploy automatically. To show the styled calendar on the site, activate the plugin and replace the old script embed with `[crowdwork_cardhouse_classes]` in the desired page.
+
 ## Limitations
 
 - The shortcode is intended to be used once per page because CrowdWork's embed uses page-wide element IDs.
