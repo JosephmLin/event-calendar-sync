@@ -1,0 +1,319 @@
+:root {
+  --cwcw-ink: #271b29;
+  --cwcw-plum: #4c2b4a;
+  --cwcw-coral: #d9775d;
+  --cwcw-gold: #d7ad58;
+  --cwcw-paper: #fffaf0;
+  --cwcw-line: #e7dccb;
+  --cwcw-display-font: "Bodoni Moda", "Bodoni MT", "Didot", Georgia, serif;
+  --cwcw-script-font: "Caveat", "Segoe Print", cursive;
+  --cwcw-ui-font: "DM Sans", "Avenir Next", Avenir, sans-serif;
+}
+
+.cwcw-classes {
+  position: relative;
+  isolation: isolate;
+  max-width: 1160px;
+  margin: clamp(2rem, 6vw, 5rem) auto;
+  padding: clamp(1.25rem, 4vw, 3.5rem);
+  overflow: hidden;
+  color: var(--cwcw-ink);
+  background:
+    radial-gradient(ellipse at 2% 2%, rgba(215, 173, 88, .16), transparent 28rem),
+    radial-gradient(ellipse at 98% 90%, rgba(217, 119, 93, .12), transparent 30rem),
+    #f4ede2;
+  border: 1px solid rgba(76, 43, 74, .16);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(39, 27, 41, .12);
+}
+
+.cwcw-classes::before,
+.cwcw-classes::after {
+  position: absolute;
+  z-index: -1;
+  width: 15rem;
+  height: 15rem;
+  border: 1px solid rgba(76, 43, 74, .12);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.cwcw-classes::before {
+  top: -10rem;
+  right: -5rem;
+}
+
+.cwcw-classes::after {
+  right: -9rem;
+  bottom: -11rem;
+  width: 21rem;
+  height: 21rem;
+}
+
+.cwcw-classes .cwcw-classes-header {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.75rem);
+  text-align: center;
+}
+
+.cwcw-classes .cwcw-classes-eyebrow {
+  margin: 0 0 .85rem;
+  color: var(--cwcw-plum);
+  font: 600 clamp(1.05rem, 2vw, 1.3rem)/1.2 var(--cwcw-script-font);
+  letter-spacing: .025em;
+}
+
+.cwcw-classes .cwcw-classes-eyebrow span {
+  padding: 0 .4em;
+  color: var(--cwcw-coral);
+}
+
+.cwcw-classes .cwcw-classes-header h2 {
+  margin: 0;
+  color: var(--cwcw-plum);
+  font: 600 clamp(2.5rem, 7vw, 5rem)/.98 var(--cwcw-display-font);
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+
+.cwcw-classes .cwcw-classes-intro {
+  max-width: 35rem;
+  margin: 1rem auto 0;
+  color: #594f57;
+  font: 400 clamp(1rem, 2vw, 1.15rem)/1.65 var(--cwcw-ui-font);
+}
+
+.cwcw-classes .cwcw-classes-star {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--cwcw-coral);
+  font-size: 1.35rem;
+}
+
+.cwcw-classes .cwcw-classes-calendar {
+  position: relative;
+  padding: clamp(.5rem, 2vw, 1.5rem);
+  background: var(--cwcw-paper);
+  border: 1px solid rgba(76, 43, 74, .13);
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(39, 27, 41, .09);
+}
+
+.cwcw-classes .fw-embed-wrap .fw-embed {
+  padding: clamp(.35rem, 1.5vw, 1.1rem) !important;
+  color: var(--cwcw-ink) !important;
+  background: var(--cwcw-paper) !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif !important;
+}
+
+.cwcw-classes .fw-embed-wrap .fc {
+  color: var(--cwcw-ink);
+  font-family: var(--cwcw-ui-font);
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-toolbar-title {
+  color: var(--cwcw-plum);
+  font: 600 clamp(1.65rem, 4vw, 2.45rem)/1 var(--cwcw-script-font);
+  letter-spacing: .015em;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-button-primary {
+  padding: .5em .8em;
+  color: #fffaf0 !important;
+  background: var(--cwcw-plum) !important;
+  border-color: var(--cwcw-plum) !important;
+  border-radius: 999px;
+  box-shadow: none;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-button-primary:hover,
+.cwcw-classes .fw-embed-wrap .fc .fc-button-primary:focus {
+  color: var(--cwcw-ink) !important;
+  background: var(--cwcw-gold) !important;
+  border-color: var(--cwcw-gold) !important;
+  box-shadow: 0 0 0 .2rem rgba(215, 173, 88, .24);
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-button-primary:disabled {
+  color: #fffaf0 !important;
+  background: #806d7e !important;
+  border-color: #806d7e !important;
+  opacity: .7;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-scrollgrid,
+.cwcw-classes .fw-embed-wrap .fc .fc-theme-standard td,
+.cwcw-classes .fw-embed-wrap .fc .fc-theme-standard th {
+  border-color: var(--cwcw-line);
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-col-header-cell {
+  background: #f3eadc;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-col-header-cell-cushion {
+  padding: .8rem .25rem;
+  color: var(--cwcw-plum);
+  font: 700 .68rem/1.2 var(--cwcw-ui-font);
+  letter-spacing: .12em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-daygrid-day-number {
+  padding: .3rem .5rem;
+  color: var(--cwcw-ink);
+  font: 500 1.25rem/1.2 var(--cwcw-script-font);
+  text-decoration: none;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-day-today {
+  background: rgba(215, 173, 88, .16);
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-day-today .fc-daygrid-day-number {
+  display: inline-block;
+  margin: .2rem;
+  padding: .1rem .5rem;
+  color: #fffaf0;
+  background: var(--cwcw-coral);
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-daygrid-event,
+.cwcw-classes .fw-embed-wrap .fc .fc-timegrid-event {
+  color: #fffaf0;
+  background: var(--cwcw-plum);
+  border: 1px solid var(--cwcw-plum);
+  border-radius: 5px;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-daygrid-event:hover,
+.cwcw-classes .fw-embed-wrap .fc .fc-timegrid-event:hover {
+  color: var(--cwcw-ink);
+  background: var(--cwcw-gold);
+  border-color: var(--cwcw-gold);
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-event,
+.cwcw-classes .fw-embed-wrap .fc .fc-event .fc-event-main,
+.cwcw-classes .fw-embed-wrap .fc .fc-event .fc-event-time,
+.cwcw-classes .fw-embed-wrap .fc .fc-event .fc-event-title {
+  color: inherit;
+}
+
+.cwcw-classes .fw-embed-wrap .fc .fc-event-title,
+.cwcw-classes .fw-embed-wrap .fc .fc-event-time {
+  font-family: var(--cwcw-ui-font);
+  font-weight: 600;
+}
+
+.cwcw-classes .fw-embed-wrap .fc a:focus-visible,
+.cwcw-classes .fw-embed-wrap .fc button:focus-visible {
+  outline: 3px solid var(--cwcw-coral);
+  outline-offset: 2px;
+}
+
+.cwcw-classes .fw-embed-wrap .fw-embed-error {
+  color: var(--cwcw-ink);
+  background: var(--cwcw-paper);
+  border: 1px solid var(--cwcw-line);
+  border-radius: 14px;
+}
+
+.cwcw-classes .fw-embed-wrap .fw-embed-error .fw-error-title {
+  color: var(--cwcw-plum);
+}
+
+.cwcw-classes .fw-embed-wrap .fw-embed-error .fw-error-retry {
+  color: #fffaf0;
+  background: var(--cwcw-plum);
+  border-radius: 999px;
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-content {
+  overflow: hidden;
+  background: var(--cwcw-paper);
+  border: 1px solid rgba(76, 43, 74, .2);
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(39, 27, 41, .32);
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-header {
+  color: #fffaf0;
+  background: var(--cwcw-plum);
+  border-bottom: 3px solid var(--cwcw-gold);
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-title {
+  color: #fffaf0 !important;
+  font: 600 clamp(1.6rem, 4vw, 2.5rem)/1.05 var(--cwcw-display-font);
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-subtitle {
+  color: #f0d99f !important;
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-body {
+  color: var(--cwcw-ink);
+  background: var(--cwcw-paper);
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase {
+  color: #fffaf0;
+  background: var(--cwcw-coral);
+  border-color: var(--cwcw-coral);
+  border-radius: 999px;
+  font-weight: 750;
+}
+
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase:hover,
+body.cwcw-has-classes-calendar #fwCalendarModal .fw-modal-btn-purchase:focus {
+  color: var(--cwcw-ink);
+  background: var(--cwcw-gold);
+  border-color: var(--cwcw-gold);
+}
+
+@media (max-width: 640px) {
+  .cwcw-classes {
+    border-radius: 18px;
+  }
+
+  .cwcw-classes .cwcw-classes-calendar {
+    padding: .4rem;
+    border-radius: 14px;
+  }
+
+  .cwcw-classes .fw-embed-wrap .fc .fc-toolbar {
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+
+  .cwcw-classes .fw-embed-wrap .fc .fc-toolbar-title {
+    font-size: 1.85rem;
+  }
+
+  .cwcw-classes .fw-embed-wrap .fc .fc-button-primary {
+    padding: .4em .6em;
+    font-size: .85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cwcw-classes *,
+  .cwcw-classes *::before,
+  .cwcw-classes *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
