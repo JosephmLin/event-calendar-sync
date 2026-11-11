@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CrowdWork CardHouseTheater Plugin
  * Description: Adds an artistic Card House Theater presentation for CrowdWork classes and shows.
- * Version: 1.2.0
+ * Version: 1.2.2
  * Author: Card House Theater
  * License: GPL-2.0-or-later
  */
@@ -15,7 +15,9 @@ function cwcw_enqueue_styles() {
     $post = get_post();
     if ( ! $post || (
         ! has_shortcode( $post->post_content, 'crowdwork_cardhouse_classes' )
+        && ! has_shortcode( $post->post_content, 'crowdwork_calendar' )
         && ! has_shortcode( $post->post_content, 'crowdwork_cardhouse_shows' )
+        && ! has_shortcode( $post->post_content, 'crowdwork_cards' )
     ) ) { return; }
 
     wp_enqueue_style(
@@ -28,11 +30,12 @@ function cwcw_enqueue_styles() {
         'crowdwork-cardhousetheater',
         plugin_dir_url( __FILE__ ) . 'assets/css/crowdwork-cardhousetheater.css',
         array( 'crowdwork-cardhousetheater-fonts' ),
-        '1.2.0'
+        '1.2.2'
     );
 }
 
 add_shortcode( 'crowdwork_cardhouse_classes', 'cwcw_render_classes_calendar' );
+add_shortcode( 'crowdwork_calendar', 'cwcw_render_classes_calendar' );
 function cwcw_render_classes_calendar() {
     $heading_id = wp_unique_id( 'cwcw-classes-heading-' );
     ob_start();
@@ -53,6 +56,7 @@ function cwcw_render_classes_calendar() {
 }
 
 add_shortcode( 'crowdwork_cardhouse_shows', 'cwcw_render_shows_cards' );
+add_shortcode( 'crowdwork_cards', 'cwcw_render_shows_cards' );
 function cwcw_render_shows_cards() {
     $heading_id = wp_unique_id( 'cwcw-shows-heading-' );
     ob_start();
@@ -78,8 +82,10 @@ function cwcw_classes_body_class( $classes ) {
     $post = get_post();
     if ( ! $post ) { return $classes; }
 
-    $has_classes = has_shortcode( $post->post_content, 'crowdwork_cardhouse_classes' );
-    $has_shows = has_shortcode( $post->post_content, 'crowdwork_cardhouse_shows' );
+    $has_classes = has_shortcode( $post->post_content, 'crowdwork_cardhouse_classes' )
+        || has_shortcode( $post->post_content, 'crowdwork_calendar' );
+    $has_shows = has_shortcode( $post->post_content, 'crowdwork_cardhouse_shows' )
+        || has_shortcode( $post->post_content, 'crowdwork_cards' );
     if ( $has_classes || $has_shows ) {
         $classes[] = 'cwcw-has-crowdwork-embed';
     }

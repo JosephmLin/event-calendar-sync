@@ -10,23 +10,24 @@ A standalone WordPress plugin that gives CrowdWork classes and show cards an aut
 4. Replace the CrowdWork script embed in the page with:
 
    ```text
-   [crowdwork_cardhouse_classes]
+   [crowdwork_calendar]
    ```
 
-The shortcode renders the CrowdWork classes calendar with the theatre-inspired heading and scoped styles.
+The shortcode renders the CrowdWork classes calendar with the theatre-inspired heading and scoped styles. The earlier `[crowdwork_cardhouse_classes]` shortcode remains available as a backwards-compatible alias.
 
 For the CrowdWork shows cards embed, replace the script with:
 
 ```text
-[crowdwork_cardhouse_shows]
+[crowdwork_cards]
 ```
 
-This shortcode renders the shows in CrowdWork's cards view, wrapped in the same visual style.
+This shortcode renders the shows in CrowdWork's cards view, wrapped in the same visual style. The earlier `[crowdwork_cardhouse_shows]` shortcode remains available as an alias.
 
 ## How it works
 
 - Loads CrowdWork's existing `https://crowdwork.com/embed.js?v=6` embed with theatre `cardhousetheater`, type `classes`, and view `calendar`.
-- Provides `[crowdwork_cardhouse_shows]` for the shows cards view (`data-type="shows"` and `data-view="cards"`).
+- Provides `[crowdwork_calendar]` for the classes calendar; `[crowdwork_cardhouse_classes]` remains as a backwards-compatible alias.
+- Provides `[crowdwork_cards]` for the shows cards view (`data-type="shows"` and `data-view="cards"`); `[crowdwork_cardhouse_shows]` remains as a backwards-compatible alias.
 - Styles the generated FullCalendar interface, event details modal, and surrounding section without changing CrowdWork event data, booking links, or checkout.
 - Styles the generated show cards and modal, and loads the plugin stylesheet only on pages containing one of the plugin's shortcodes; embed selectors are scoped so other calendars and pages are unaffected.
 
@@ -49,7 +50,7 @@ Before enabling it, add these repository variables in **Settings → Secrets and
 
 Add a dedicated SSH private key as the `WP_CROWDWORK_SSH_KEY` repository secret and authorize its public key for the GreenGeeks account. Never store the private key in the repository or send it in chat. Keep SSH host-key checking enabled.
 
-After setup, select **Actions → Deploy CrowdWork CardHouseTheater plugin → Run workflow** to test a deployment. Later changes under this plugin's folder on `main` deploy automatically. To show a styled embed on the site, activate the plugin and replace the old script embed with `[crowdwork_cardhouse_classes]` or `[crowdwork_cardhouse_shows]` in the desired page.
+After setup, select **Actions → Deploy CrowdWork CardHouseTheater plugin → Run workflow** to test a deployment. Later changes under this plugin's folder on `main` deploy automatically. To show a styled embed on the site, activate the plugin and replace the old script embed with `[crowdwork_calendar]` or `[crowdwork_cards]` in the desired page.
 
 ## Limitations
 
