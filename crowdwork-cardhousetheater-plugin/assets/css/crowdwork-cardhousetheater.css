@@ -175,17 +175,7 @@
 }
 
 .cwcw-classes .fw-embed-wrap .fc .fc-day-today {
-  background: rgba(215, 173, 88, .16);
-}
-
-.cwcw-classes .fw-embed-wrap .fc .fc-day-today .fc-daygrid-day-number {
-  display: inline-block;
-  margin: .2rem;
-  padding: .1rem .5rem;
-  color: #fffaf0;
-  background: var(--cwcw-coral);
-  border-radius: 50%;
-  font-weight: 700;
+  background: transparent !important;
 }
 
 .cwcw-classes .fw-embed-wrap .fc .fc-daygrid-event,

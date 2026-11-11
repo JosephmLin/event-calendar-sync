@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CrowdWork CardHouseTheater Plugin
  * Description: Adds an artistic Card House Theater presentation for the CrowdWork Classes calendar.
- * Version: 1.1.0
+ * Version: 1.1.3
  * Author: Card House Theater
  * License: GPL-2.0-or-later
  */
@@ -25,7 +25,7 @@ function cwcw_enqueue_styles() {
         'crowdwork-cardhousetheater',
         plugin_dir_url( __FILE__ ) . 'assets/css/crowdwork-cardhousetheater.css',
         array( 'crowdwork-cardhousetheater-fonts' ),
-        '1.1.0'
+        '1.1.3'
     );
 }
 
