@@ -24,7 +24,7 @@ Both shortcodes accept the following optional attributes. Defaults preserve each
 
 | Attribute | Values | Default / notes |
 |---|---|---|
-| `type` | `shows`, `classes`, `all` | Calendar: `classes`; cards: `shows`. |
+| `type` | `shows`, `classes`, `all` | `all` for both shortcodes. |
 | `view` | `calendar`, `cards` | Calendar: `calendar`; cards: `cards`. |
 | `category` | Exact public tag name | Omit to show all tags. Tag names are case-sensitive. |
 | `category_bar` | `true`, `false` | `false`. A category bar lets visitors filter by public tag; when enabled, it takes precedence over `category`. |
@@ -40,10 +40,10 @@ For example, show all event types in a calendar beginning in May 2026, with week
 [crowdwork_calendar type="all" view="calendar" start_date="2026-05-01" start_dow="0" days="7"]
 ```
 
-Or show classes as cards filtered to an exact public tag, including all recurring dates:
+Or show all event types as cards filtered to an exact public tag, including all recurring dates:
 
 ```text
-[crowdwork_cards type="classes" category="Beginner" all_dates="true"]
+[crowdwork_cards category="Beginner" all_dates="true"]
 ```
 
 For a visitor-selectable tag filter, use `category_bar="true"` instead of `category`.

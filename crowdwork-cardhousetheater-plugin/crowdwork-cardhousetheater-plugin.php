@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CrowdWork CardHouseTheater Plugin
  * Description: Adds an artistic Card House Theater presentation for CrowdWork classes and shows.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Card House Theater
  * License: GPL-2.0-or-later
  */
@@ -28,7 +28,7 @@ function cwcw_enqueue_styles() {
         'crowdwork-cardhousetheater',
         plugin_dir_url( __FILE__ ) . 'assets/css/crowdwork-cardhousetheater.css',
         array( 'crowdwork-cardhousetheater-fonts' ),
-        '1.3.1'
+        '1.3.2'
     );
 }
 
@@ -36,7 +36,7 @@ add_shortcode( 'crowdwork_calendar', 'cwcw_render_classes_calendar' );
 function cwcw_render_classes_calendar( $atts = array() ) {
     return cwcw_render_widget(
         $atts,
-        'classes',
+        'all',
         'calendar',
         'Find your next scene.',
         'Explore improv classes and make a little room for the unexpected.',
@@ -48,7 +48,7 @@ add_shortcode( 'crowdwork_cards', 'cwcw_render_shows_cards' );
 function cwcw_render_shows_cards( $atts = array() ) {
     return cwcw_render_widget(
         $atts,
-        'shows',
+        'all',
         'cards',
         'Come see what’s on stage.',
         'Find your next favorite night out at Card House Theater.',
