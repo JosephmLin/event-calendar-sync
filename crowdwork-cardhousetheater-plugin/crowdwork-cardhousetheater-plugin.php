@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CrowdWork CardHouseTheater Plugin
  * Description: Adds an artistic Card House Theater presentation for CrowdWork classes and shows.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Card House Theater
  * License: GPL-2.0-or-later
  */
@@ -14,9 +14,7 @@ function cwcw_enqueue_styles() {
     if ( ! is_singular() ) { return; }
     $post = get_post();
     if ( ! $post || (
-        ! has_shortcode( $post->post_content, 'crowdwork_cardhouse_classes' )
-        && ! has_shortcode( $post->post_content, 'crowdwork_calendar' )
-        && ! has_shortcode( $post->post_content, 'crowdwork_cardhouse_shows' )
+        ! has_shortcode( $post->post_content, 'crowdwork_calendar' )
         && ! has_shortcode( $post->post_content, 'crowdwork_cards' )
     ) ) { return; }
 
@@ -30,11 +28,10 @@ function cwcw_enqueue_styles() {
         'crowdwork-cardhousetheater',
         plugin_dir_url( __FILE__ ) . 'assets/css/crowdwork-cardhousetheater.css',
         array( 'crowdwork-cardhousetheater-fonts' ),
-        '1.3.0'
+        '1.3.1'
     );
 }
 
-add_shortcode( 'crowdwork_cardhouse_classes', 'cwcw_render_classes_calendar' );
 add_shortcode( 'crowdwork_calendar', 'cwcw_render_classes_calendar' );
 function cwcw_render_classes_calendar( $atts = array() ) {
     return cwcw_render_widget(
@@ -47,7 +44,6 @@ function cwcw_render_classes_calendar( $atts = array() ) {
     );
 }
 
-add_shortcode( 'crowdwork_cardhouse_shows', 'cwcw_render_shows_cards' );
 add_shortcode( 'crowdwork_cards', 'cwcw_render_shows_cards' );
 function cwcw_render_shows_cards( $atts = array() ) {
     return cwcw_render_widget(
@@ -130,7 +126,7 @@ function cwcw_render_widget( $atts, $default_type, $default_view, $heading, $int
         'data-type="' . esc_attr( $type ) . '"',
         'data-view="' . esc_attr( $view ) . '"',
     );
-    if ( '' !== $category ) {
+    if ( '' !== $category && ! $category_bar ) {
         $script_attributes[] = 'data-category="' . esc_attr( $category ) . '"';
     }
     if ( $category_bar ) {
@@ -192,21 +188,17 @@ function cwcw_shortcode_error( $message ) {
     return '<p class="cwcw-shortcode-error">' . esc_html( $message ) . '</p>';
 }
 
-add_filter( 'body_class', 'cwcw_classes_body_class' );
-function cwcw_classes_body_class( $classes ) {
+add_filter( 'body_class', 'cwcw_embed_body_class' );
+function cwcw_embed_body_class( $classes ) {
     if ( ! is_singular() ) { return $classes; }
     $post = get_post();
     if ( ! $post ) { return $classes; }
 
-    $has_classes = has_shortcode( $post->post_content, 'crowdwork_cardhouse_classes' )
-        || has_shortcode( $post->post_content, 'crowdwork_calendar' );
-    $has_shows = has_shortcode( $post->post_content, 'crowdwork_cardhouse_shows' )
-        || has_shortcode( $post->post_content, 'crowdwork_cards' );
-    if ( $has_classes || $has_shows ) {
+    if (
+        has_shortcode( $post->post_content, 'crowdwork_calendar' )
+        || has_shortcode( $post->post_content, 'crowdwork_cards' )
+    ) {
         $classes[] = 'cwcw-has-crowdwork-embed';
-    }
-    if ( $has_classes ) {
-        $classes[] = 'cwcw-has-classes-calendar';
     }
     return $classes;
 }

@@ -11,10 +11,10 @@ A standalone WordPress plugin that gives CrowdWork classes and show cards an aut
 
 ## Shortcodes
 
-| Shortcode | Displays | Legacy alias |
-|---|---|---|
-| `[crowdwork_calendar]` | CrowdWork classes calendar with the theatre-inspired heading and styles. | `[crowdwork_cardhouse_classes]` |
-| `[crowdwork_cards]` | CrowdWork shows in cards view with matching styles. | `[crowdwork_cardhouse_shows]` |
+| Shortcode | Displays |
+|---|---|
+| `[crowdwork_calendar]` | CrowdWork classes calendar with the theatre-inspired heading and styles. |
+| `[crowdwork_cards]` | CrowdWork shows in cards view with matching styles. |
 
 Use only one CrowdWork shortcode per page because CrowdWork's embed uses page-wide element IDs.
 
@@ -51,8 +51,7 @@ For a visitor-selectable tag filter, use `category_bar="true"` instead of `categ
 ## How it works
 
 - Loads CrowdWork's existing `https://crowdwork.com/embed.js?v=6` embed with theatre `cardhousetheater`, type `classes`, and view `calendar`.
-- Provides `[crowdwork_calendar]` for the classes calendar; `[crowdwork_cardhouse_classes]` remains as a backwards-compatible alias.
-- Provides `[crowdwork_cards]` for the shows cards view (`data-type="shows"` and `data-view="cards"`); `[crowdwork_cardhouse_shows]` remains as a backwards-compatible alias.
+- Provides `[crowdwork_calendar]` for the classes calendar and `[crowdwork_cards]` for the shows cards view. Both accept the documented widget options.
 - Styles the generated FullCalendar interface, event details modal, and surrounding section without changing CrowdWork event data, booking links, or checkout.
 - Styles the generated show cards and modal, and loads the plugin stylesheet only on pages containing one of the plugin's shortcodes; embed selectors are scoped so other calendars and pages are unaffected.
 
