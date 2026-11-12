@@ -7,21 +7,46 @@ A standalone WordPress plugin that gives CrowdWork classes and show cards an aut
 1. In WordPress, go to **Plugins → Add New Plugin → Upload Plugin**.
 2. Upload `crowdwork-cardhousetheater-plugin.zip`.
 3. Activate **CrowdWork CardHouseTheater Plugin**.
-4. Replace the CrowdWork script embed in the page with:
+4. Choose a shortcode from the list below and add it to the page using a Shortcode block or your page builder's shortcode element.
 
-   ```text
-   [crowdwork_calendar]
-   ```
+## Shortcodes
 
-The shortcode renders the CrowdWork classes calendar with the theatre-inspired heading and scoped styles. The earlier `[crowdwork_cardhouse_classes]` shortcode remains available as a backwards-compatible alias.
+| Shortcode | Displays | Legacy alias |
+|---|---|---|
+| `[crowdwork_calendar]` | CrowdWork classes calendar with the theatre-inspired heading and styles. | `[crowdwork_cardhouse_classes]` |
+| `[crowdwork_cards]` | CrowdWork shows in cards view with matching styles. | `[crowdwork_cardhouse_shows]` |
 
-For the CrowdWork shows cards embed, replace the script with:
+Use only one CrowdWork shortcode per page because CrowdWork's embed uses page-wide element IDs.
+
+### Shortcode options
+
+Both shortcodes accept the following optional attributes. Defaults preserve each shortcode's standard content type and view.
+
+| Attribute | Values | Default / notes |
+|---|---|---|
+| `type` | `shows`, `classes`, `all` | Calendar: `classes`; cards: `shows`. |
+| `view` | `calendar`, `cards` | Calendar: `calendar`; cards: `cards`. |
+| `category` | Exact public tag name | Omit to show all tags. Tag names are case-sensitive. |
+| `category_bar` | `true`, `false` | `false`. A category bar lets visitors filter by public tag; when enabled, it takes precedence over `category`. |
+| `start_date` | `YYYY-MM-DD` | Omit to start from the current date/month. Applies to calendar views. |
+| `start_dow` | `0` through `6` | Omit for Monday; `0` is Sunday and `6` is Saturday. Applies to calendar views. |
+| `days` | `1`, `3`, `7` | Omit for no rolling day limit. |
+| `all_dates` | `true`, `false` | `false`. In cards view, `true` shows every upcoming date for recurring events. |
+| `links` | `on`, `off` | `on`. `off` prevents the widget from updating the page URL as visitors filter or open events. |
+
+For example, show all event types in a calendar beginning in May 2026, with weeks starting Sunday and a seven-day rolling range:
 
 ```text
-[crowdwork_cards]
+[crowdwork_calendar type="all" view="calendar" start_date="2026-05-01" start_dow="0" days="7"]
 ```
 
-This shortcode renders the shows in CrowdWork's cards view, wrapped in the same visual style. The earlier `[crowdwork_cardhouse_shows]` shortcode remains available as an alias.
+Or show classes as cards filtered to an exact public tag, including all recurring dates:
+
+```text
+[crowdwork_cards type="classes" category="Beginner" all_dates="true"]
+```
+
+For a visitor-selectable tag filter, use `category_bar="true"` instead of `category`.
 
 ## How it works
 
